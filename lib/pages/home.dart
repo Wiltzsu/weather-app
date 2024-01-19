@@ -19,29 +19,29 @@ class _HomeState extends State<Home> {
   String temperature = "Loading...";
   String highLowTemp = "Loading...";
 
-  List<Map<String, String>> forecastData = [];
+  List<Map<String, String>> forecastData = []; // List to store forecast data
 
   @override
-  void initState() {
-    super.initState();
-    fetchWeather();
-    fetchWeatherForecast();
+  void initState() { // This method is called when the state is first created
+    super.initState(); // Call the super.initState() method
+    fetchWeather(); // Call the fetchWeather() method
+    fetchWeatherForecast(); // Call the fetchWeatherForecast() method
   }
 
   Future<void> fetchWeather() async
   {
-    var url = Uri.parse('http://api.openweathermap.org/data/2.5/weather?q=Helsinki&appid=$apiKey');
-    var response = await http.get(url);
+    var url = Uri.parse('http://api.openweathermap.org/data/2.5/weather?q=Helsinki&appid=$apiKey'); // Construct the URL
+    var response = await http.get(url); // Make the API call
 
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    if (response.statusCode == 200) { // Check if the API call was successful
+      var data = json.decode(response.body); // Decode the JSON data
 
       // Convert temperatures from Kelvin to Celsius
       double tempCelsius = data['main']['temp'] - 273.15;
       double highTempCelsius = data['main']['temp_max'] - 273.15;
       double lowTempCelsius = data['main']['temp_min'] - 273.15;
 
-      setState(() {
+      setState(() { // Update the state
         cityName = "Helsinki";
         weatherDescription = data['weather'][0]['description'];
         temperature = "${tempCelsius.toStringAsFixed(1)}°C";
@@ -56,26 +56,26 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Future<void> fetchWeatherForecast() async {
+  Future<void> fetchWeatherForecast() async { // This method is called when the state is first created
     var url = Uri.parse('https://api.openweathermap.org/data/2.5/forecast?q=Helsinki&appid=$apiKey');
-    var response = await http.get(url);
+    var response = await http.get(url); // Make the API call
 
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    if (response.statusCode == 200) { // Check if the API call was successful
+      var data = json.decode(response.body); // Decode the JSON data
       List<dynamic> forecastList = data['list'];
 
-      List<Map<String, String>> tempForecastData = [];
-      for (var forecast in forecastList) {
-        int timestamp = forecast['dt'];
-        DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+      List<Map<String, String>> tempForecastData = []; // Temporary list to store the formatted weather data
+      for (var forecast in forecastList) { // Loop through the forecast list
+        int timestamp = forecast['dt']; // Extract the timestamp
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000); // Convert the timestamp to a DateTime object
 
         // Format the date to show the abbreviated weekday and hour
         String formattedDate = DateFormat('E - HH').format(date); // 'E' gives abbreviated weekday, 'HH' gives hour in 24-hour format
 
-        String weatherDescription = forecast['weather'][0]['description'];
+        String weatherDescription = forecast['weather'][0]['description']; // Extracting weather description
         String iconCode = forecast['weather'][0]['icon']; // Extracting icon code
         String iconUrl = 'http://openweathermap.org/img/w/$iconCode.png'; // Building the icon URL
-        double temp = forecast['main']['temp'] - 273.15;
+        double temp = forecast['main']['temp'] - 273.15; // Extracting temperature
 
         tempForecastData.add({
           'date': formattedDate, // Now contains the formatted day and hour
@@ -87,7 +87,7 @@ class _HomeState extends State<Home> {
 
 
       setState(() {
-        forecastData = tempForecastData;
+        forecastData = tempForecastData; // Update the state
       });
     } else {
       // Handle the error case
@@ -176,7 +176,7 @@ class _HomeState extends State<Home> {
                   highLowTemp,
                   style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.white, // Subtle color
+                    color: Colors.orangeAccent, // Subtle color
                   ),
                 ),
               ],
